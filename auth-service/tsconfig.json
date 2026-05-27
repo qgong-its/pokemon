@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    /*
+     * =========================
+     * Runtime / Module System
+     * =========================
+     */
+    "target": "es2022", // Sets the JavaScript version output
+    "lib": ["es2022"], // Includes modern ES features in the type system
+    "module": "NodeNext", // Preserves ES module syntax
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    /*
+     * =========================
+     * ESM / Import Behavior
+     * =========================
+     */
+    "esModuleInterop": true, // Enables default imports from CommonJS modules
+    "verbatimModuleSyntax": true, // Keeps import/export syntax as-is for Node.js
+    "resolveJsonModule": true, // Allows importing JSON modules
+    "moduleDetection": "force", // Treats all files as modules regardless of import/export
+    /*
+     * =========================
+     * Output
+     * =========================
+     */
+    "rootDir": "src",
+    "outDir": "dist", // Output directory for compiled JavaScript
+    "noEmit": false, // Enables output generation
+    "rewriteRelativeImportExtensions": true, // Rewrites relative imports with correct extensions
+    /*
+     * =========================
+     * Type Safety
+     * =========================
+     */
+    "strict": true, // Enables all strict type-checking options
+    "noUncheckedIndexedAccess": true, // Adds 'undefined' to object access via index if type not declared
+    "noImplicitOverride": true, // Requires 'override' keyword when overriding methods
+    "forceConsistentCasingInFileNames": true, // Enforces consistent casing in file names across different OSes
+    /*
+     * =========================
+     * Performance / Compatibility
+     * =========================
+     */
+    "skipLibCheck": true, // Skips type checking of declaration files (*.d.ts)
+    "isolatedModules": true, // Ensures each file can be transpiled independently
+    /*
+     * =========================
+     * Path Aliases for Editor / TS
+     * =========================
+     */
+    "paths": {
+      "#*": ["./src/*/index.ts"]
+    }
+  },
+  "include": ["src"], // Files to include in compilation
+  "exclude": ["dist", "node_modules"] // Files to exclude in compilation
+}
