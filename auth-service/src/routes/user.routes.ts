@@ -8,7 +8,7 @@ import {
   updateUser,
 } from '#controllers';
 
-import { validate } from '#middleware';
+import { authRole, authToken, validate } from '#middleware';
 import {
   createUserZodSchema,
   updateUserZodSchema,
@@ -19,17 +19,18 @@ const userRouter = Router();
 
 userRouter
   .route('/')
-  .get(getUsers)
+  .get(authToken, authRole('admin'), getUsers)
   .post(validate(createUserZodSchema), createUser);
 
 userRouter
   .route('/:id')
-  .get(validate(userIdParamsZodSchema, 'params'), getUserById)
+  .get(validate(userIdParamsZodSchema, 'params'), authToken, getUserById)
   .patch(
     validate(userIdParamsZodSchema, 'params'),
+    authToken,
     validate(updateUserZodSchema),
     updateUser,
   )
-  .delete(validate(userIdParamsZodSchema, 'params'), deleteUser);
+  .delete(validate(userIdParamsZodSchema, 'params'), authToken, deleteUser);
 
 export default userRouter;

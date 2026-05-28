@@ -1,9 +1,9 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 
+import { PORT } from '#config';
 import connectDB from '#db';
-import {
-  userRouter,
-} from '#routes';
+import { authRouter, userRouter } from '#routes';
 import {
   corsHandler,
   basicErrorHandler,
@@ -11,11 +11,12 @@ import {
 } from '#middleware';
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
 app.use(corsHandler);
 app.use(express.json());
+app.use(cookieParser());
 
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 
 app.use((_req, res) => {
