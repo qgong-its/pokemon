@@ -5,7 +5,15 @@ import type { Role } from '#types';
 
 export const authToken: RequestHandler = (req, _res, next) => {
   try {
-    req.user = parseAccessToken(req.headers.authorization);
+    const token =
+      req.cookies?.accessToken ??
+      req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      throw new AppError(401, 'Missing access token', 'NO_TOKEN', 'WARN');
+    }
+
+    req.user = parseAccessToken(token);
 
     next();
   } catch (error) {
