@@ -51,7 +51,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
       expires: new Date(Date.now() + REFRESH_TOKEN_TTL * 1000),
     });
 
-    res.status(201).json(user);
+    res.status(201).json({ user, accessToken });
   } catch (error: unknown) {
     next(error);
   }
