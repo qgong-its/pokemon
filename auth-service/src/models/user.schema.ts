@@ -1,7 +1,7 @@
-import type { UserType } from '#types';
+import type { User } from '#types';
 import { Schema } from 'mongoose';
 
-export const userSchema = new Schema<UserType>(
+export const userSchema = new Schema<User>(
   {
     name: {
       type: String,
@@ -12,6 +12,7 @@ export const userSchema = new Schema<UserType>(
       type: String,
       required: [true, 'Email is required'],
       unique: true,
+      lowercase:true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Email is not valid'],
     },
@@ -21,9 +22,17 @@ export const userSchema = new Schema<UserType>(
       select: false, // exclude sensitive fields
       minlength: [8, 'Password must be at least 8 characters long'],
     },
+    roles: {
+      type: [String],
+      default: ['user'],
+    },
     isActive: {
       type: Boolean,
       default: true,
+    },
+    pokemonIds: {
+      type: [Number],
+      default: [],
     },
   },
   {

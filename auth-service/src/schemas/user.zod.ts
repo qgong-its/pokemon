@@ -22,7 +22,15 @@ export const passwordZodSchema = z
     'Password must include lowercase, uppercase, number and special character',
   );
 
+export const roleZodSchema = z.enum(['user', 'admin']);
+
+export const rolesZodSchema = z.array(roleZodSchema).min(1).default(['user']);
+
 export const isActiveZodSchema = z.boolean();
+
+export const pokemonIdsZodSchema = z
+  .array(z.number().int().positive())
+  .default([]);
 
 export const userIdParamsZodSchema = z
   .object({
@@ -37,6 +45,7 @@ export const createUserZodSchema = z
     name: userNameZodSchema,
     email: emailZodSchema,
     password: passwordZodSchema,
+    pokemonIds: pokemonIdsZodSchema,
   })
   .strict();
 
@@ -50,3 +59,12 @@ export const updateUserZodSchema = createUserZodSchema
   });
 
 export type UpdateUserZodDTO = z.infer<typeof updateUserZodSchema>;
+
+export const loginZodSchema = z
+  .object({
+    email: emailZodSchema,
+    password: passwordZodSchema,
+  })
+  .strict();
+
+export type LoginZodDTO = z.infer<typeof loginZodSchema>;
