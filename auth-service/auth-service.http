@@ -1,0 +1,48 @@
+@baseUrl = http://localhost:3001/api
+@userId = 6a17bc9a61d60d5475db3666
+
+### POST create user / register
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Ash",
+  "email": "ash@example.com",
+  "password": "Password123!",
+  "pokemonIds": []
+}
+
+### POST login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ash@example.com",
+  "password": "Password123!"
+}
+
+### POST refresh access token
+POST {{baseUrl}}/auth/refresh
+Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzk5NDIxODIsImV4cCI6MTc4MjUzNDE4Miwic3ViIjoiNmExN2JjOWE2MWQ2MGQ1NDc1ZGIzNjY2In0.EaTw0wbeV5AYSDR2jfWKQubPncGQtCpv-i9oDnHVDEM;
+
+### POST logout
+POST {{baseUrl}}/auth/logout
+
+### GET all users - admin only
+GET {{baseUrl}}/users
+
+### GET user by id
+GET {{baseUrl}}/users/{{userId}}
+Cookie: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTc3OTk0MjE4MiwiZXhwIjoxNzc5OTQzMDgyLCJzdWIiOiI2YTE3YmM5YTYxZDYwZDU0NzVkYjM2NjYifQ.g2lZNcFyBOMsXMp0MoNid-bYmJTAoqjczR8zLob_404;
+
+### PATCH update user
+PATCH {{baseUrl}}/users/{{userId}}
+Content-Type: application/json
+
+{
+  "name": "Ash Ketchum",
+  "pokemonIds": [1, 4, 7]
+}
+
+### DELETE user - soft/hard delete depending on controller
+DELETE {{baseUrl}}/users/{{userId}}

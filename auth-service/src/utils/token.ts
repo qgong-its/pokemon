@@ -9,14 +9,14 @@ import {
 } from '#config';
 import { AppError } from './AppError.ts';
 
-export const createAccessToken = async (id: string, roles: Role[]) => {
+export const createAccessToken = (id: string, roles: Role[]) => {
   return jwt.sign({ roles }, ACCESS_JWT_SECRET, {
     subject: id,
     expiresIn: ACCESS_TOKEN_TTL,
   });
 };
 
-export const createRefreshToken = async (id: string) => {
+export const createRefreshToken = (id: string) => {
   return jwt.sign({}, REFRESH_JWT_SECRET, {
     subject: id,
     expiresIn: REFRESH_TOKEN_TTL,
@@ -46,9 +46,7 @@ export const getBearerToken = (authHeader?: string) => {
   return token;
 };
 
-export const parseAccessToken = (authHeader?: string) => {
-  const token = getBearerToken(authHeader);
-
+export const parseAccessToken = (token: string) => {
   const payload = verifyToken<AccessTokenPayload>(token, ACCESS_JWT_SECRET);
 
   if (!payload.sub || !payload.roles) {
