@@ -1,13 +1,16 @@
 import type { RequestHandler } from 'express';
 
 import { UserModel } from '#models';
-import type {
-  UserIdParamsZodDTO,
-  CreateUserZodDTO,
-  UpdateUserZodDTO,
-} from '#schemas';
-import { AppError } from '#utils';
+import { userIdParamsZodSchema, createUserZodSchema } from '#schemas';
+import {
+  AppError,
+  createAccessToken,
+  createRefreshToken,
+  getCookieOpts,
+  hashPassword,
+} from '#utils';
 import { assertUserExists, assertUserEmailAvailable } from '#services';
+import { REFRESH_TOKEN_TTL } from '#config';
 
 export const getUsers: RequestHandler = async (_req, res, next) => {
   try {
@@ -19,9 +22,39 @@ export const getUsers: RequestHandler = async (_req, res, next) => {
   }
 };
 
+export const createUser: RequestHandler = async (req, res, next) => {
+  try {
+    const data = createUserZodSchema.parse(req.body);
+    const { password, ...userData } = data;
+
+    await assertUserEmailAvailable(data.email);
+
+    const hashedPassword = await hashPassword(password);
+
+    const user = await UserModel.create({
+      ...userData,
+      password: hashedPassword,
+    });
+
+    const accessToken = createAccessToken(user.id, user.roles);
+
+    const refreshToken = createRefreshToken(user.id);
+
+    res.cookie('accessToken', accessToken, getCookieOpts());
+    res.cookie('refreshToken', refreshToken, {
+      ...getCookieOpts(),
+      expires: new Date(Date.now() + REFRESH_TOKEN_TTL * 1000),
+    });
+
+    res.status(201).json(user);
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
 export const getUserById: RequestHandler = async (req, res, next) => {
   try {
-    const { id } = req.params as UserIdParamsZodDTO;
+    const { id } = userIdParamsZodSchema.parse(req.params);
     const user = await assertUserExists(id);
 
     res.json(user);
@@ -30,24 +63,10 @@ export const getUserById: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const createUser: RequestHandler = async (req, res, next) => {
-  try {
-    const data = req.body as CreateUserZodDTO;
-
-    await assertUserEmailAvailable(data.email);
-
-    const user = await UserModel.create(data);
-
-    res.status(201).json(user);
-  } catch (error: unknown) {
-    next(error);
-  }
-};
-
 export const updateUser: RequestHandler = async (req, res, next) => {
   try {
-    const { id } = req.params as UserIdParamsZodDTO;
-    const data = req.body as UpdateUserZodDTO;
+    const { id } = userIdParamsZodSchema.parse(req.params);
+    const data = createUserZodSchema.parse(req.body);
 
     if (data.email) {
       await assertUserEmailAvailable(data.email);
@@ -70,7 +89,7 @@ export const updateUser: RequestHandler = async (req, res, next) => {
 
 export const deleteUser: RequestHandler = async (req, res, next) => {
   try {
-    const { id } = req.params as UserIdParamsZodDTO;
+    const { id } = userIdParamsZodSchema.parse(req.params);
     const user = await UserModel.findByIdAndDelete(id);
 
     if (!user) {
