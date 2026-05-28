@@ -38,6 +38,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
     const user = await UserModel.create({
       ...userData,
       password: hashedPassword,
+      roles: ['user'],
     });
 
     const accessToken = createAccessToken(user.id, user.roles);
