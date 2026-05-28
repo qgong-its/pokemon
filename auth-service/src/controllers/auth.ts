@@ -52,7 +52,7 @@ export const login: RequestHandler = async (req, res, next) => {
       expires: new Date(Date.now() + REFRESH_TOKEN_TTL * 1000),
     });
 
-    res.status(200).json(user);
+    res.status(200).json({ user, accessToken });
   } catch (error: unknown) {
     next(error);
   }
@@ -113,7 +113,7 @@ export const refresh: RequestHandler = async (req, res, next) => {
 
     res.cookie('accessToken', accessToken, getCookieOpts());
 
-    res.status(200).json(user);
+    res.status(200).json({ user, accessToken });
   } catch (error: unknown) {
     next(error);
   }
