@@ -1,7 +1,11 @@
 import type { RequestHandler } from 'express';
 
 import { UserModel } from '#models';
-import { userIdParamsZodSchema, createUserZodSchema } from '#schemas';
+import {
+  userIdParamsZodSchema,
+  createUserZodSchema,
+  updateUserZodSchema,
+} from '#schemas';
 import {
   AppError,
   createAccessToken,
@@ -66,10 +70,14 @@ export const getUserById: RequestHandler = async (req, res, next) => {
 export const updateUser: RequestHandler = async (req, res, next) => {
   try {
     const { id } = userIdParamsZodSchema.parse(req.params);
-    const data = createUserZodSchema.parse(req.body);
+    const data = updateUserZodSchema.parse(req.body);
 
     if (data.email) {
       await assertUserEmailAvailable(data.email);
+    }
+
+    if (data.password) {
+      data.password = await hashPassword(data.password);
     }
 
     const user = await UserModel.findByIdAndUpdate(id, data, {
