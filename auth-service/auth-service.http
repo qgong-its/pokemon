@@ -1,13 +1,26 @@
 @baseUrl = http://localhost:3001/api
-@userId = 6a17bc9a61d60d5475db3666
+@userId =
 
-### POST create user / register
+### ERROR TEST
+### POST create user 'admin'
 POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-  "name": "Ash",
-  "email": "ash@example.com",
+  "name": "Admin",
+  "email": "admin@example.com",
+  "password": "Password123!",
+  "roles": ["admin"],
+  "pokemonIds": []
+}
+
+### POST create user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Player",
+  "email": "player@example.com",
   "password": "Password123!",
   "pokemonIds": []
 }
@@ -17,13 +30,13 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "ash@example.com",
+  "email": "player@example.com",
   "password": "Password123!"
 }
 
 ### POST refresh access token
 POST {{baseUrl}}/auth/refresh
-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Nzk5NDIxODIsImV4cCI6MTc4MjUzNDE4Miwic3ViIjoiNmExN2JjOWE2MWQ2MGQ1NDc1ZGIzNjY2In0.EaTw0wbeV5AYSDR2jfWKQubPncGQtCpv-i9oDnHVDEM;
+
 
 ### POST logout
 POST {{baseUrl}}/auth/logout
@@ -33,14 +46,14 @@ GET {{baseUrl}}/users
 
 ### GET user by id
 GET {{baseUrl}}/users/{{userId}}
-Cookie: accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTc3OTk0MjE4MiwiZXhwIjoxNzc5OTQzMDgyLCJzdWIiOiI2YTE3YmM5YTYxZDYwZDU0NzVkYjM2NjYifQ.g2lZNcFyBOMsXMp0MoNid-bYmJTAoqjczR8zLob_404;
+
 
 ### PATCH update user
 PATCH {{baseUrl}}/users/{{userId}}
 Content-Type: application/json
 
 {
-  "name": "Ash Ketchum",
+  "name": "Player I",
   "pokemonIds": [1, 4, 7]
 }
 
